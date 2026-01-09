@@ -1,6 +1,10 @@
-# AI-Powered ML Algorithm Recommender
+# ML Algorithm Recommender (ARCSaathi)
 
-An intelligent, advanced GUI application that automatically analyzes datasets and recommends the best machine learning algorithms based on comprehensive dataset characteristics.
+This repository contains **ARCSaathi**, a PySide6 desktop app that helps you:
+- Load datasets (CSV/Excel/JSON/Parquet)
+- Profile/validate schema and auto-infer task/target
+- Build preprocessing pipelines
+- Train and compare multiple ML models
 
 ## 🚀 Features
 
@@ -53,17 +57,14 @@ Supports **60+ algorithms** across multiple categories:
 - **Category Classification**: Algorithm type and category
 - **Workflow Guidance**: Standard ML workflow for each algorithm
 
-### Modern GUI
-- **Dark Theme**: Beautiful, modern dark interface
-- **Interactive Visualization**: Score comparisons and confidence plots
-- **Tabbed Information**: Organized display of recommendations
-- **Real-time Analysis**: Progress tracking during analysis
-- **File Support**: Load CSV and Excel files
-- **Multiple Task Types**: Classification, Regression, Clustering, Dimensionality Reduction
+### Desktop UI
+- Multi-tab workflow (data → preprocessing → training → results)
+- Dataset preview + profiling + visualizations
+- Batch training and model comparison
 
 ## 📋 Requirements
 
-- Python 3.8 or higher
+- Python 3.10+ recommended (tested with Python 3.12)
 - See `requirements.txt` for all dependencies
 
 ## 🛠️ Installation
@@ -77,10 +78,12 @@ pip install -r requirements.txt
 
 ## 🎯 Usage
 
-1. **Run the application**:
+1. **Run the ARCSaathi application**:
 ```bash
 python main.py
 ```
+
+This launches the PySide6 ARCSaathi UI (entrypoint is `main.py` → `ARCSaathi.app`).
 
 2. **Load your dataset**:
    - Click "📁 Load Dataset"
@@ -175,16 +178,20 @@ The system considers:
 ## 🔧 Technical Details
 
 ### Architecture
-- **dataset_analyzer.py**: Comprehensive dataset analysis engine
-- **algorithm_recommender.py**: Intelligent recommendation engine with algorithm database
-- **main.py**: Modern GUI application using CustomTkinter
+- **ARCSaathi/**: PySide6 app (UI, controllers, models)
+- **main.py**: ARCSaathi entrypoint
+
+### Legacy app (kept for reference)
+This repo previously contained a CustomTkinter GUI. During the merge, the old versions were preserved as:
+- `legacy_remote_main.py`
+- `legacy_remote_requirements.txt`
+- `legacy_remote_gitignore.txt`
 
 ### Key Technologies
-- **CustomTkinter**: Modern, customizable Tkinter-based GUI
-- **Pandas**: Data manipulation and analysis
-- **NumPy**: Numerical computations
-- **Matplotlib/Seaborn**: Data visualization
-- **Scikit-learn**: ML algorithm knowledge base
+- **PySide6**: Desktop UI
+- **Pandas / NumPy**: Data processing
+- **Scikit-learn**: Modeling + preprocessing
+- **Matplotlib**: Visualizations
 
 ## 🎯 Future Enhancements
 
