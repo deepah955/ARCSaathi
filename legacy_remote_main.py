@@ -1,35 +1,139 @@
-<<<<<<< HEAD
-"""Entry point for ARCSaathi."""
-
-from ARCSaathi.app import run
-
-
-if __name__ == "__main__":
-    raise SystemExit(run())
-"""
+﻿"""
 AI-Powered ML Algorithm Recommender - Main GUI Application
 Advanced GUI for intelligent ML algorithm recommendations
 """
 
 import customtkinter as ctk
 import pandas as pd
+import numpy as np
+from tkinter import filedialog, messagebox
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import seaborn as sns
+from typing import Optional, List
+import threading
 
-        • Dimensionality Reduction: 5 algorithms
+from dataset_analyzer import DatasetAnalyzer
+from algorithm_recommender import AlgorithmRecommender, AlgorithmRecommendation
+
+# Configure appearance
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("blue")
+
+
+class MLRecommenderApp(ctk.CTk):
+    """Main application window for ML Algorithm Recommender"""
+    
+    def __init__(self):
+        super().__init__()
         
-        🔍 What We Analyze
-        • Dataset size and complexity
-        • Feature types and distributions
-        • Missing values and data quality
-        • Class imbalance and target characteristics
-        • Feature correlations
+        self.title("AI-Powered ML Algorithm Recommender")
+        self.geometry("1400x900")
+        self.minsize(1200, 800)
+        
+        self.dataset: Optional[pd.DataFrame] = None
+        self.target_column: Optional[str] = None
+        self.analysis_results: Optional[dict] = None
+        self.recommendations: List[AlgorithmRecommendation] = []
+        
+        self.analyzer = DatasetAnalyzer()
+        self.recommender = AlgorithmRecommender()
+        
+        self._create_widgets()
+        self._setup_layout()
+    
+    def _create_widgets(self):
+        """Create all GUI widgets with tabbed navigation"""
+        # Main container
+        self.main_container = ctk.CTkFrame(self)
+        self.main_container.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        # Create tabview for main navigation
+        self.tabview = ctk.CTkTabview(self.main_container, height=850)
+        self.tabview.pack(fill="both", expand=True)
+        
+        # Create tabs
+        self.tab_home = self.tabview.add("Home")
+        self.tab_dataset = self.tabview.add("Dataset")
+        self.tab_configure = self.tabview.add("Configure")
+        self.tab_recommendations = self.tabview.add("Recommendations")
+        self.tab_visualization = self.tabview.add("Visualization")
+        self.tab_about = self.tabview.add("About")
+        
+        # Create content for each tab
+        self._create_home_tab()
+        self._create_dataset_tab()
+        self._create_configure_tab()
+        self._create_recommendations_tab()
+        self._create_visualization_tab()
+        self._create_about_tab()
+        
+        # Create content for each tab
+        self._create_home_tab()
+        self._create_dataset_tab()
+        self._create_configure_tab()
+        self._create_recommendations_tab()
+        self._create_visualization_tab()
+        self._create_about_tab()
+    
+    def _create_home_tab(self):
+        """Create home/welcome tab"""
+        # Welcome title
+        welcome_title = ctk.CTkLabel(
+            self.tab_home,
+            text="≡ƒÜÇ AI-Powered ML Algorithm Recommender",
+            font=ctk.CTkFont(size=32, weight="bold")
+        )
+        welcome_title.pack(pady=(50, 20))
+        
+        # Subtitle
+        subtitle = ctk.CTkLabel(
+            self.tab_home,
+            text="Intelligent Algorithm Selection for Machine Learning",
+            font=ctk.CTkFont(size=18),
+            text_color="gray"
+        )
+        subtitle.pack(pady=(0, 40))
+        
+        # Features frame
+        features_frame = ctk.CTkFrame(self.tab_home)
+        features_frame.pack(fill="both", expand=True, padx=100, pady=20)
+        
+        features_text = """
+        KEY FEATURES
+        
+        Comprehensive Analysis
+        ΓÇó Analyzes 268+ dataset characteristics
+        ΓÇó Data quality assessment
+        ΓÇó Feature correlation and distribution analysis
+        ΓÇó Automatic task type detection
+        
+        Intelligent Recommendations
+        ΓÇó 60+ Machine Learning algorithms
+        ΓÇó Multi-factor scoring system
+        ΓÇó Confidence metrics
+        ΓÇó Detailed reasoning for each recommendation
+        
+        ≡ƒôÜ Algorithm Categories
+        ΓÇó Regression: 18 algorithms
+        ΓÇó Classification: 15 algorithms
+        ΓÇó Clustering: 10 algorithms
+        ΓÇó Dimensionality Reduction: 5 algorithms
+        
+        ≡ƒöì What We Analyze
+        ΓÇó Dataset size and complexity
+        ΓÇó Feature types and distributions
+        ΓÇó Missing values and data quality
+        ΓÇó Class imbalance and target characteristics
+        ΓÇó Feature correlations
         
         
-        🚦 GET STARTED
+        ≡ƒÜª GET STARTED
         
-        1️⃣ Go to "Dataset" tab and load your CSV/Excel file
-        2️⃣ Configure task type and target column in "Configure" tab
-        3️⃣ Click "Analyze & Recommend" to get intelligent suggestions
-        4️⃣ View recommendations and visualizations
+        1∩╕ÅΓâú Go to "Dataset" tab and load your CSV/Excel file
+        2∩╕ÅΓâú Configure task type and target column in "Configure" tab
+        3∩╕ÅΓâú Click "Analyze & Recommend" to get intelligent suggestions
+        4∩╕ÅΓâú View recommendations and visualizations
         """
         
         features_label = ctk.CTkLabel(
@@ -122,7 +226,7 @@ import pandas as pd
         # Next button
         next_btn = ctk.CTkButton(
             self.tab_dataset,
-            text="Next: Configure Analysis ➡️",
+            text="Next: Configure Analysis Γ₧í∩╕Å",
             command=lambda: self.tabview.set("Configure"),
             height=40,
             font=ctk.CTkFont(size=14, weight="bold")
@@ -223,7 +327,7 @@ import pandas as pd
         
         self.analyze_btn = ctk.CTkButton(
             analyze_frame,
-            text="🔍 Analyze & Recommend",
+            text="≡ƒöì Analyze & Recommend",
             command=self._analyze_and_recommend,
             height=60,
             font=ctk.CTkFont(size=18, weight="bold"),
@@ -310,25 +414,25 @@ import pandas as pd
         AI-Powered ML Algorithm Recommender v2.0
         
         
-        📚 ALGORITHM DATABASE
+        ≡ƒôÜ ALGORITHM DATABASE
         
         This system includes 60+ machine learning algorithms:
         
-        • Regression Algorithms: 18
+        ΓÇó Regression Algorithms: 18
           Linear, Polynomial, Ridge, Lasso, Elastic Net, Bayesian, Decision Tree,
           Random Forest, Extra Trees, Gradient Boosting, AdaBoost, XGBoost,
           LightGBM, CatBoost, KNN, SVR, Neural Network
         
-        • Classification Algorithms: 15
+        ΓÇó Classification Algorithms: 15
           Logistic Regression, Ridge Classifier, Decision Tree, Random Forest,
           Extra Trees, Gradient Boosting, AdaBoost, XGBoost, LightGBM,
           CatBoost, KNN, SVM, Naive Bayes, Neural Network
         
-        • Clustering Algorithms: 10
+        ΓÇó Clustering Algorithms: 10
           K-Means, Mini-Batch K-Means, DBSCAN, HDBSCAN, Agglomerative,
           Gaussian Mixture Model, Spectral Clustering, OPTICS
         
-        • Dimensionality Reduction: 5
+        ΓÇó Dimensionality Reduction: 5
           PCA, LDA, t-SNE, UMAP, Autoencoders
         
         
@@ -347,39 +451,39 @@ HOW IT WORKS
            pros/cons, and hyperparameter suggestions
         
         
-        📖 DOCUMENTATION
+        ≡ƒôû DOCUMENTATION
         
         For detailed information about each algorithm, see:
-        • ALGORITHMS_REFERENCE.md - Complete algorithm guide
-        • CHANGELOG.md - Version history and updates
-        • README.md - Project overview and installation
+        ΓÇó ALGORITHMS_REFERENCE.md - Complete algorithm guide
+        ΓÇó CHANGELOG.md - Version history and updates
+        ΓÇó README.md - Project overview and installation
         
         
-        💻 TECHNICAL DETAILS
+        ≡ƒÆ╗ TECHNICAL DETAILS
         
         Built with:
-        • Python 3.8+
-        • CustomTkinter for modern GUI
-        • Pandas & NumPy for data analysis
-        • Scikit-learn for ML fundamentals
-        • Matplotlib & Seaborn for visualizations
+        ΓÇó Python 3.8+
+        ΓÇó CustomTkinter for modern GUI
+        ΓÇó Pandas & NumPy for data analysis
+        ΓÇó Scikit-learn for ML fundamentals
+        ΓÇó Matplotlib & Seaborn for visualizations
         
         
-        🎓 USE CASES
+        ≡ƒÄô USE CASES
         
-        • Academic research and project evaluation
-        • ML pipeline optimization
-        • Algorithm selection for production systems
-        • Educational purposes and ML learning
-        • Data science workflow improvement
+        ΓÇó Academic research and project evaluation
+        ΓÇó ML pipeline optimization
+        ΓÇó Algorithm selection for production systems
+        ΓÇó Educational purposes and ML learning
+        ΓÇó Data science workflow improvement
         
         
-        📧 SUPPORT
+        ≡ƒôº SUPPORT
         
         For questions, issues, or feature requests:
-        • Check the documentation files
-        • Review the algorithm reference guide
-        • Explore sample datasets
+        ΓÇó Check the documentation files
+        ΓÇó Review the algorithm reference guide
+        ΓÇó Explore sample datasets
         """
         
         about_label = ctk.CTkLabel(
@@ -426,9 +530,9 @@ HOW IT WORKS
         
         After running the analysis, this tab will display:
         
-        • Score comparison bar charts
-        • Confidence vs Score scatter plots
-        • Algorithm ranking visualizations
+        ΓÇó Score comparison bar charts
+        ΓÇó Confidence vs Score scatter plots
+        ΓÇó Algorithm ranking visualizations
         
         Run the analysis to see your results visualized!
         """
@@ -554,7 +658,7 @@ Duplicates: {self.dataset.duplicated().sum():,} rows"""
             # Small delay to ensure rendering, then show message
             self.after(200, lambda: messagebox.showinfo(
                 "Success",
-                f"Dataset loaded successfully!\n\n{len(self.dataset):,} rows × {len(self.dataset.columns)} columns"
+                f"Dataset loaded successfully!\n\n{len(self.dataset):,} rows ├ù {len(self.dataset.columns)} columns"
             ))
             
             print("Dataset loading complete!")
@@ -718,7 +822,7 @@ Duplicates: {self.dataset.duplicated().sum():,} rows"""
         
         # Reasoning tab
         reasoning_tab = tabview.add("Reasoning")
-        reasoning_text = "\n".join([f"• {r}" for r in rec.reasoning])
+        reasoning_text = "\n".join([f"ΓÇó {r}" for r in rec.reasoning])
         reasoning_label = ctk.CTkLabel(
             reasoning_tab,
             text=reasoning_text if reasoning_text else "No specific reasoning available",
@@ -742,7 +846,7 @@ Duplicates: {self.dataset.duplicated().sum():,} rows"""
         )
         pros_title.pack(anchor="w", padx=10, pady=5)
         
-        pros_text = "\n".join([f"• {p}" for p in rec.pros])
+        pros_text = "\n".join([f"ΓÇó {p}" for p in rec.pros])
         pros_label = ctk.CTkLabel(
             pros_frame,
             text=pros_text,
@@ -763,7 +867,7 @@ Duplicates: {self.dataset.duplicated().sum():,} rows"""
         )
         cons_title.pack(anchor="w", padx=10, pady=5)
         
-        cons_text = "\n".join([f"• {c}" for c in rec.cons])
+        cons_text = "\n".join([f"ΓÇó {c}" for c in rec.cons])
         cons_label = ctk.CTkLabel(
             cons_frame,
             text=cons_text,
@@ -775,7 +879,7 @@ Duplicates: {self.dataset.duplicated().sum():,} rows"""
         
         # Best For tab
         best_for_tab = tabview.add("Best For")
-        best_for_text = "\n".join([f"• {b}" for b in rec.best_for])
+        best_for_text = "\n".join([f"ΓÇó {b}" for b in rec.best_for])
         best_for_label = ctk.CTkLabel(
             best_for_tab,
             text=best_for_text,
@@ -869,7 +973,7 @@ Duplicates: {self.dataset.duplicated().sum():,} rows"""
     
     def _reset_analyze_button(self):
         """Reset analyze button state"""
-        self.analyze_btn.configure(state="normal", text="🔍 Analyze & Recommend")
+        self.analyze_btn.configure(state="normal", text="≡ƒöì Analyze & Recommend")
         self.progress_bar.set(0)
         self.progress_bar.pack_forget()
 
@@ -883,4 +987,3 @@ def main():
 if __name__ == "__main__":
     main()
 
->>>>>>> dfa3fca04bd46d5759c62329046d882ecc4fee99

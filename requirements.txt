@@ -33,3 +33,4 @@ scikit-learn-extra>=0.3; python_version < "3.12"
 # Optional tuning libraries
 optuna>=3.6
 hyperopt>=0.2
+
